@@ -163,24 +163,27 @@ html, body {
 }
 .letter-container {
   max-width: 380px; width: 100%; margin-top: 1.5rem;
-}
-.letter-p {
   background: rgba(255,255,255,0.65); backdrop-filter: blur(8px);
-  border-radius: 16px; padding: 1.2rem 1.4rem; margin-bottom: 1rem;
-  font-size: 1rem; line-height: 1.9; color: var(--text);
+  border-radius: 20px; padding: 1.5rem 1.6rem 2rem;
   box-shadow: 0 4px 16px rgba(191,126,70,0.08);
   border: 1px solid rgba(191,126,70,0.08);
-  opacity: 0; transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
 }
-.letter-p.visible {
+.letter-line {
+  font-size: 1rem; line-height: 1.9; color: var(--text);
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.letter-line.visible {
   opacity: 1; transform: translateY(0);
+}
+.letter-blank {
+  height: 0.8em;
 }
 .letter-end {
   font-family: 'Caveat', cursive; font-size: 1.6rem;
   color: var(--caramel); margin-top: 1.5rem; margin-bottom: 3rem;
-  opacity: 0; transform: translateY(20px);
-  transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 .letter-end.visible { opacity: 1; transform: translateY(0); }
 
@@ -281,43 +284,28 @@ html, body {
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function() {
 
-  var LETTER = [
-    "亲爱的张乙薰",
-    "你也知道我这几天都在越南 基本上没什么时间好好的为你准备什么 我现在在yoyo bus上面打着我想写给你的信 因为我觉得这一次的离别 我无法用钱去证明我对你的不舍 还有爱 这种爱已经不能算是闺蜜的爱 甚至是家人的爱 所以最讨厌写字作文的我 此时此刻是我这一生最想写的时候 现在是晚上4月1的晚上10点25分 想到我们的点点滴滴 我已经在哭了",
-    "我知道我们还能再见 但我怕的是事情的发展不会像我们想的那么顺利 我们或许能再见 但可能次数不多 想到这边 我发现我们真的长大了 原来大人说的长大后 会变得很孤独是真的 因为我这一生只有你这个最好的朋友 只有你对我那么好 只有你会想让我牢牢地守护着一段友谊",
-    "原来真心把一个人放心里是这种感觉 我第一次会为了一个没有血缘关系的人 担心 怕她难过 因为她情绪起伏 我也一起有情绪起伏 遇到你之前 我只会一味的讨好 容忍 我没有体验过 原来友谊如此美好 珍贵 原来我们是可以互相理解 互相为对方难过的",
-    "还记得第一次我找你的时候吗 哈哈哈 因为yxl 想想这些事情 觉得很好笑 但是也证明了我们一起从幼稚成长到现在成熟的我们 快5年了",
-    "我很庆幸 我们没有因为一开始的这件事 排斥认识彼此 不然我就要错过你了 我真的是一个非常重视你的人 写这些话不是为了写而写 而是知道你是一个那么善良 那么好的人 我无法想象错过你 我这几年到底会如何面对学业 还有校方给我的所有压力",
-    "我真的真的很开心我没有错过你",
-    "你陪我读书 尽你所能教会我 我不会做的题\n你给我力量 你鼓励我让我变得更加自信\n你理解我的泪点 理解我的泪失禁\n我Psoriasis你还用我的梳子让我知道我不被嫌弃\n就算医院很远起来要很早 你都陪我去看医生",
-    "我真的觉得 你是我这辈子很重要的人 你对我的好我完全看在眼里 而我也是尽我所能在我有能力的时候把好的给你 希望你开心 因为我喜欢看到你的笑容 看到你开心 我也会很开心",
-    "如果你问我友谊的定义是什么\n我的答案就是 张乙薰",
-    "我的高中生活 有你 我真的很开心 我们一起经历过风风雨雨 我们一起哭一起闹 一起喝酒到 我把最真实的我 哭给你看 那一刻我发现 你对我来说已经不是普通的存在 因为我把所有我的内心告诉你",
-    "这次想到你要去KL了 我其实真的千万种不舍 我知道你很坚强 很聪明 但我也知道你内心很敏感 也是个泪失禁 我很怕你受欺负 很怕你一个人人生地不熟 怕你孤单 怕你压力 所以我想到的时候真的会很难过",
-    "我想告诉你 如果你需要我了 你一定要跟我说 无论如何 无论你在天涯海角 我也一直都在 像我说的 你不需要我的时候 只要我有时间 我也会去找你 我真的会一直都在",
-    "你让我学会了如何真心对一个人\n你让我知道我也值得被真心对待\n你让我知道这个世界破破烂烂 而你一直缝缝补补",
-    "在认识你之前 我很强势 我认为所有东西都需要跟着规则走 就像我是pengawas exco的时候 我被大家排挤 说我冷血 不会睁一眼闭一眼 你的出现 让我知道什么叫偏心 偏爱 偏袒 好多事情别人做我都无法接受 但你做 我只觉得你开心是最最最重要的 甚至想陪你闹",
-    "还没认识你之前我真的很讨厌中学生涯 我根本不理解他们的不舍 所以我真的很谢谢你 让我黯淡无光的日子 画上很多道光 很多道彩虹",
-    "毕业的时候 我感受到了不舍 这个不舍是因为不舍我们在中学的回忆止步于此 所以我们毕业后能走到今天 我真的真的很开心你知道吗 我希望我们可以一辈子 老了一起去环游世界 继续一起聊八卦 一起吵 一起闹",
-    "在KL一定要好好保护自己 好好爱自己知道吗\n压力了就给自己一些时间 休息休息\n如果有人欺负你 我就飞过去帮你讨回公道\n一定要定时吃饭 不要再不吃了！\n去那边你会认识更多的人 但是不要被骗\n人有好有坏 你要好好看\n遇到什么事情都一定要跟我说",
-    "就算你遇到很好的朋友 我也会替你开心 也会一直在你背后做你的后盾 我会一直在",
-    "所以所有的所有 我真的很感谢你\n大话我不敢说\n但我敢说 在你生命中 我是最爱你的朋友\n当你遇到困难 只要我能做到 我都一定会帮你\n只要你需要我 我一定都会在\n因为你是张乙薰\n也谢谢你是张乙薰"
-  ];
+  var LETTER_TEXT = "To：亲爱的张乙薰\n\n你也知道我这几天都在越南 基本上没什么时间好好的为你准备什么 我现在在yoyo bus上面打着我想写给你的信 因为我觉得这一次的离别 我无法用钱去证明我对你的不舍 还有爱 这种爱已经不能算是闺蜜的爱 甚至是家人的爱 所以最讨厌写字作文的我 此时此刻是我这一生最想写的时候 现在是晚上4月1的晚上10点25分 想到我们的点点滴滴 我已经在哭了\n\n我知道我们还能再见 但我怕的是事情的发展不会像我们想的那么顺利 我们或许能再见 但可能次数不多 想到这边 我发现我们真的长大了 原来大人说的长大后 会变得很孤独是真的 因为我这一生只有你这个最好的朋友 只有你对我那么好 只有你会想让我牢牢地守护着一段友谊\n\n原来真心把一个人放心里是这种感觉 我第一次会为了一个没有血缘关系的人 担心 怕她难过 因为她情绪起伏 我也一起有情绪起伏 遇到你之前 我只会一味的讨好 容忍 我没有体验过 原来友谊如此美好 珍贵 原来我们是可以互相理解 互相为对方难过的\n\n还记得第一次我找你的时候吗 哈哈哈 因为yxl 想想这些事情 觉得很好笑 但是也证明了我们一起从幼稚成长到现在成熟的我们 快5年了\n\n我很庆幸 我们没有因为一开始的这件事 排斥认识彼此 不然我就要错过你了 我真的是一个非常重视你的人 写这些话不是为了写而写 而是知道你是一个那么善良 那么好的人 我无法想象错过你 我这几年到底会如何面对学业 还有校方给我的所有压力\n\n我真的真的很开心我没有错过你\n\n你陪我读书 尽你所能教会我 我不会做的题\n你给我力量 你鼓励我让我变得更加自信\n你理解我的泪点 理解我的泪失禁\n我Psoriasis你还用我的梳子让我知道我不被嫌弃\n就算医院很远起来要很早 你都陪我去看医生\n\n我真的觉得 你是我这辈子很重要的人 你对我的好我完全看在眼里 而我也是尽我所能在我有能力的时候把好的给你 希望你开心 因为我喜欢看到你的笑容 看到你开心 我也会很开心\n\n如果你问我友谊的定义是什么\n我的答案就是 张乙薰\n\n我的高中生活 有你 我真的很开心 我们一起经历过风风雨雨 我们一起哭一起闹 一起喝酒到 我把最真实的我 哭给你看 那一刻我发现 你对我来说已经不是普通的存在 因为我把所有我的内心告诉你\n\n这次想到你要去KL了 我其实真的千万种不舍 我知道你很坚强 很聪明 但我也知道你内心很敏感 也是个泪失禁 我很怕你受欺负 很怕你一个人人生地不熟 怕你孤单 怕你压力 所以我想到的时候真的会很难过\n\n我想告诉你 如果你需要我了 你一定要跟我说 无论如何 无论你在天涯海角 我也一直都在 像我说的 你不需要我的时候 只要我有时间 我也会去找你 我真的会一直都在\n\n你让我学会了如何真心对一个人\n你让我知道我也值得被真心对待\n你让我知道这个世界破破烂烂 而你一直缝缝补补\n\n在认识你之前 我很强势 我认为所有东西都需要跟着规则走 就像我是pengawas exco的时候 我被大家排挤 说我冷血 不会睁一眼闭一眼 你的出现 让我知道什么叫偏心 偏爱 偏袒 好多事情别人做我都无法接受 但你做 我只觉得你开心是最最最重要的 甚至想陪你闹\n\n还没认识你之前我真的很讨厌中学生涯 我根本不理解他们的不舍 所以我真的很谢谢你 让我黯淡无光的日子 画上很多道光 很多道彩虹\n\n毕业的时候 我感受到了不舍 这个不舍是因为不舍我们在中学的回忆止步于此 所以我们毕业后能走到今天 我真的真的很开心你知道吗 我希望我们可以一辈子 老了一起去环游世界 继续一起聊八卦 一起吵 一起闹\n\n在KL一定要好好保护自己 好好爱自己知道吗\n压力了就给自己一些时间 休息休息\n如果有人欺负你 我就飞过去帮你讨回公道\n一定要定时吃饭 不要再不吃了！\n去那边你会认识更多的人 但是不要被骗\n人有好有坏 你要好好看\n遇到什么事情都一定要跟我说\n\n就算你遇到很好的朋友 我也会替你开心 也会一直在你背后做你的后盾 我会一直在\n\n所以所有的所有 我真的很感谢你\n大话我不敢说\n但我敢说 在你生命中 我是最爱你的朋友\n当你遇到困难 只要我能做到 我都一定会帮你\n只要你需要我 我一定都会在\n因为你是张乙薰\n也谢谢你是张乙薰";
 
   function showLetter() {
     var box = document.getElementById("letter-container");
     box.innerHTML = "";
-    for (var i = 0; i < LETTER.length; i++) {
-      var p = document.createElement("div");
-      p.className = "letter-p";
-      p.style.transitionDelay = (0.15 * i) + "s";
-      p.innerHTML = LETTER[i].replace(/\n/g, "<br>");
-      box.appendChild(p);
+    // Split into lines, each line becomes a fade-in element
+    var lines = LETTER_TEXT.split("\n");
+    for (var i = 0; i < lines.length; i++) {
+      var el = document.createElement("div");
+      el.className = "letter-line";
+      if (lines[i] === "") {
+        el.innerHTML = "&nbsp;";
+        el.classList.add("letter-blank");
+      } else {
+        el.textContent = lines[i];
+      }
+      box.appendChild(el);
     }
-    // Trigger fade-in after a short delay
+    // Fade-in on scroll
     setTimeout(function() {
-      var ps = box.querySelectorAll(".letter-p");
-      // Use IntersectionObserver if available, otherwise just reveal all
+      var allLines = box.querySelectorAll(".letter-line");
+      var endEl = document.querySelector(".letter-end");
       if (window.IntersectionObserver) {
         var obs = new IntersectionObserver(function(entries) {
           for (var j = 0; j < entries.length; j++) {
@@ -326,23 +314,14 @@ document.addEventListener("DOMContentLoaded", function() {
               obs.unobserve(entries[j].target);
             }
           }
-        }, { root: document.getElementById("final-scroll"), threshold: 0.1 });
-        for (var k = 0; k < ps.length; k++) {
-          obs.observe(ps[k]);
-        }
-        // Also observe the ending text
-        var endEl = document.querySelector(".letter-end");
+        }, { root: document.getElementById("final-scroll"), threshold: 0.15 });
+        for (var k = 0; k < allLines.length; k++) obs.observe(allLines[k]);
         if (endEl) obs.observe(endEl);
       } else {
-        for (var m = 0; m < ps.length; m++) ps[m].classList.add("visible");
-        var endEl2 = document.querySelector(".letter-end");
-        if (endEl2) endEl2.classList.add("visible");
+        for (var m = 0; m < allLines.length; m++) allLines[m].classList.add("visible");
+        if (endEl) endEl.classList.add("visible");
       }
-      // Reveal first few immediately
-      for (var n = 0; n < Math.min(3, ps.length); n++) {
-        ps[n].classList.add("visible");
-      }
-    }, 600);
+    }, 400);
   }
   var wrongCounts = { q1: 0, q2: 0, q3: 0 };
   var hintMsgs = {
