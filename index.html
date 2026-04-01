@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>蜜 Q&A</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+:root {
+  --caramel: #BF7E46;
+  --papaya: #FBEDD6;
+  --baby-blue: #97C6E0;
+  --caramel-light: #d4a373;
+  --caramel-dark: #8B5E34;
+  --white: #fff;
+  --text: #5a3e2b;
+  --text-light: #8B7355;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+  background: var(--papaya);
+  color: var(--text);
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+  overflow: hidden;
+  z-index: 1;
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 10;
+}
+
+.bg-circles {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden;
+}
+.bg-circles span {
+  position: absolute; border-radius: 50%; opacity: 0.12;
+  animation: float 8s ease-in-out infinite;
+}
+.bg-circles span:nth-child(1) {
+  width: 200px; height: 200px; background: var(--baby-blue);
+  top: -60px; right: -40px;
+}
+.bg-circles span:nth-child(2) {
+  width: 150px; height: 150px; background: var(--caramel);
+  bottom: 10%; left: -30px; animation-delay: -3s;
+}
+.bg-circles span:nth-child(3) {
+  width: 100px; height: 100px; background: var(--baby-blue);
+  bottom: -20px; right: 20%; animation-delay: -5s;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+#intro { background: linear-gradient(160deg, var(--papaya) 0%, #fef3e2 50%, var(--baby-blue) 100%); }
+
+.honey-icon { font-size: 4rem; margin-bottom: 1rem; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+.intro-title {
+  font-family: 'Caveat', cursive;
+  font-size: 5rem; color: var(--caramel); margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 10px rgba(191,126,70,0.15);
+}
+.intro-subtitle {
+  font-size: 1.1rem; color: var(--text-light);
+  margin-bottom: 2.5rem; letter-spacing: 2px;
+}
+
+.skip-btn {
+  background: var(--caramel); color: var(--white); border: none;
+  padding: 14px 48px; border-radius: 50px; font-size: 1.1rem;
+  font-family: inherit; font-weight: 500; cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(191,126,70,0.3);
+}
+.skip-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(191,126,70,0.4); }
+.skip-btn:active { transform: translateY(0); }
+
+.quiz-screen { background: linear-gradient(160deg, var(--papaya) 0%, #fef3e2 100%); }
+
+.question-number {
+  font-family: 'Caveat', cursive; font-size: 1.4rem;
+  color: var(--caramel-light); margin-bottom: 0.5rem; letter-spacing: 1px;
+}
+.question-text {
+  font-size: 1.5rem; font-weight: 500; color: var(--text);
+  text-align: center; margin-bottom: 2.5rem; line-height: 1.8; max-width: 340px;
+}
+
+.options-container {
+  display: flex; flex-direction: column; gap: 1rem;
+  width: 100%; max-width: 300px;
+}
+.option-btn {
+  padding: 16px 24px; border-radius: 16px; font-size: 1.15rem;
+  font-family: inherit; font-weight: 500; cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2.5px solid transparent; text-align: center;
+}
+.option-btn.style-caramel { background: var(--white); color: var(--caramel-dark); border-color: var(--caramel-light); }
+.option-btn.style-caramel:hover { background: var(--caramel); color: var(--white); border-color: var(--caramel); }
+.option-btn.style-blue { background: var(--white); color: #5a7a8a; border-color: var(--baby-blue); }
+.option-btn.style-blue:hover { background: var(--baby-blue); color: var(--white); border-color: var(--baby-blue); }
+.option-btn.style-papaya { background: var(--white); color: var(--text-light); border-color: #e8d5b8; }
+.option-btn.style-papaya:hover { background: var(--papaya); color: var(--caramel-dark); border-color: var(--caramel-light); }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); } 40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); } 80% { transform: translateX(5px); }
+}
+
+.hint-text {
+  margin-top: 1.5rem; font-size: 0.9rem; color: var(--caramel-light);
+  opacity: 0; transition: opacity 0.5s ease; text-align: center;
+}
+.hint-text.show { opacity: 1; }
+
+#final {
+  background: linear-gradient(160deg, var(--baby-blue) 0%, var(--papaya) 50%, #fef3e2 100%);
+  justify-content: flex-start;
+  padding: 0;
+  overflow: hidden;
+}
+
+.congrats-emoji { font-size: 3.5rem; margin-bottom: 1rem; animation: celebrate 1s ease-in-out infinite; }
+@keyframes celebrate {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-10deg) scale(1.1); } 75% { transform: rotate(10deg) scale(1.1); }
+}
+.congrats-title { font-family: 'Caveat', cursive; font-size: 2.2rem; color: var(--caramel); margin-bottom: 0.5rem; }
+.congrats-sub { font-size: 1.4rem; font-weight: 500; color: var(--text); margin-bottom: 0.3rem; }
+.congrats-note { font-size: 1rem; color: var(--text-light); margin-bottom: 2rem; }
+
+.final-scroll-wrap {
+  width: 100%; height: 100%;
+  overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 3rem 1.5rem 4rem; position: relative; z-index: 2;
+  -webkit-overflow-scrolling: touch;
+}
+.letter-container {
+  max-width: 380px; width: 100%; margin-top: 1.5rem;
+}
+.letter-p {
+  background: rgba(255,255,255,0.65); backdrop-filter: blur(8px);
+  border-radius: 16px; padding: 1.2rem 1.4rem; margin-bottom: 1rem;
+  font-size: 1rem; line-height: 1.9; color: var(--text);
+  box-shadow: 0 4px 16px rgba(191,126,70,0.08);
+  border: 1px solid rgba(191,126,70,0.08);
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.letter-p.visible {
+  opacity: 1; transform: translateY(0);
+}
+.letter-end {
+  font-family: 'Caveat', cursive; font-size: 1.6rem;
+  color: var(--caramel); margin-top: 1.5rem; margin-bottom: 3rem;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+}
+.letter-end.visible { opacity: 1; transform: translateY(0); }
+
+.final-message-box {
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
+  border-radius: 20px; padding: 2rem; max-width: 340px; width: 100%;
+  text-align: center; box-shadow: 0 8px 32px rgba(191,126,70,0.12);
+  border: 1px solid rgba(191,126,70,0.1);
+}
+.final-message-text { font-size: 1.15rem; line-height: 2; color: var(--text); white-space: pre-line; }
+
+.confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+.confetti-piece {
+  position: absolute; width: 10px; height: 10px; top: -10px;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+.progress-dots { display: flex; gap: 10px; margin-bottom: 2rem; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #e0d0be; transition: all 0.4s ease; }
+.dot.done { background: var(--caramel); transform: scale(1.2); }
+.dot.current { background: var(--baby-blue); transform: scale(1.3); box-shadow: 0 0 8px rgba(151,198,224,0.5); }
+
+.floating-hearts { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+.heart { position: absolute; font-size: 1.5rem; animation: heartRise 3s ease-out forwards; opacity: 0; }
+@keyframes heartRise {
+  0% { transform: translateY(0) scale(0); opacity: 0; }
+  10% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { transform: translateY(-300px) scale(0.5); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="intro" class="screen active">
+  <div class="bg-circles"><span></span><span></span><span></span></div>
+  <div class="honey-icon">🍯</div>
+  <div class="intro-title">蜜</div>
+  <div class="intro-subtitle">這就是我們的 Q&A</div>
+  <button class="skip-btn" id="js-start">開始 ➜</button>
+</div>
+
+<div id="q1" class="screen quiz-screen">
+  <div class="bg-circles"><span></span><span></span><span></span></div>
+  <div class="progress-dots"><div class="dot current"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="question-number">Question 01</div>
+  <div class="question-text">你知道<br>你在我心中<br>什麼樣的存在嗎？</div>
+  <div class="options-container" id="q1-options">
+    <button class="option-btn style-caramel" data-a="correct" data-q="q1" data-n="q2">不知道</button>
+    <button class="option-btn style-blue" data-a="wrong" data-q="q1" data-n="q2">知道吧</button>
+  </div>
+  <div class="hint-text" id="q1-hint"></div>
+</div>
+
+<div id="q2" class="screen quiz-screen">
+  <div class="bg-circles"><span></span><span></span><span></span></div>
+  <div class="progress-dots"><div class="dot done"></div><div class="dot current"></div><div class="dot"></div></div>
+  <div class="question-number">Question 02</div>
+  <div class="question-text">你覺得<br>你在我心裡<br>排第幾？</div>
+  <div class="options-container" id="q2-options">
+    <button class="option-btn style-caramel" data-a="correct" data-q="q2" data-n="q3">高</button>
+    <button class="option-btn style-blue" data-a="wrong" data-q="q2" data-n="q3">中</button>
+    <button class="option-btn style-papaya" data-a="wrong" data-q="q2" data-n="q3">低</button>
+  </div>
+  <div class="hint-text" id="q2-hint"></div>
+</div>
+
+<div id="q3" class="screen quiz-screen">
+  <div class="bg-circles"><span></span><span></span><span></span></div>
+  <div class="progress-dots"><div class="dot done"></div><div class="dot done"></div><div class="dot current"></div></div>
+  <div class="question-number">Question 03</div>
+  <div class="question-text">你覺得<br>我跟你<br>誰比較可愛？</div>
+  <div class="options-container" id="q3-options">
+    <button class="option-btn style-caramel" data-a="correct" data-q="q3" data-n="final">Kath</button>
+    <button class="option-btn style-blue" data-a="wrong" data-q="q3" data-n="final">Xun</button>
+  </div>
+  <div class="hint-text" id="q3-hint"></div>
+</div>
+
+<div id="final" class="screen">
+  <div class="bg-circles"><span></span><span></span><span></span></div>
+  <div class="final-scroll-wrap" id="final-scroll">
+    <div class="congrats-emoji">🎉</div>
+    <div class="congrats-title">蜜</div>
+    <div class="congrats-sub">恭喜你闖關成功</div>
+    <div class="congrats-note">這是我想對你說的話，慢慢看喔 ↓</div>
+    <div class="letter-container" id="letter-container"></div>
+    <div class="letter-end">💛 永遠都在 💛</div>
+  </div>
+</div>
+
+<div class="confetti-container" id="confetti"></div>
+<div class="floating-hearts" id="hearts"></div>
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+
+  var LETTER = [
+    "亲爱的张乙薰",
+    "你也知道我这几天都在越南 基本上没什么时间好好的为你准备什么 我现在在yoyo bus上面打着我想写给你的信 因为我觉得这一次的离别 我无法用钱去证明我对你的不舍 还有爱 这种爱已经不能算是闺蜜的爱 甚至是家人的爱 所以最讨厌写字作文的我 此时此刻是我这一生最想写的时候 现在是晚上4月1的晚上10点25分 想到我们的点点滴滴 我已经在哭了",
+    "我知道我们还能再见 但我怕的是事情的发展不会像我们想的那么顺利 我们或许能再见 但可能次数不多 想到这边 我发现我们真的长大了 原来大人说的长大后 会变得很孤独是真的 因为我这一生只有你这个最好的朋友 只有你对我那么好 只有你会想让我牢牢地守护着一段友谊",
+    "原来真心把一个人放心里是这种感觉 我第一次会为了一个没有血缘关系的人 担心 怕她难过 因为她情绪起伏 我也一起有情绪起伏 遇到你之前 我只会一味的讨好 容忍 我没有体验过 原来友谊如此美好 珍贵 原来我们是可以互相理解 互相为对方难过的",
+    "还记得第一次我找你的时候吗 哈哈哈 因为yxl 想想这些事情 觉得很好笑 但是也证明了我们一起从幼稚成长到现在成熟的我们 快5年了",
+    "我很庆幸 我们没有因为一开始的这件事 排斥认识彼此 不然我就要错过你了 我真的是一个非常重视你的人 写这些话不是为了写而写 而是知道你是一个那么善良 那么好的人 我无法想象错过你 我这几年到底会如何面对学业 还有校方给我的所有压力",
+    "我真的真的很开心我没有错过你",
+    "你陪我读书 尽你所能教会我 我不会做的题\n你给我力量 你鼓励我让我变得更加自信\n你理解我的泪点 理解我的泪失禁\n我Psoriasis你还用我的梳子让我知道我不被嫌弃\n就算医院很远起来要很早 你都陪我去看医生",
+    "我真的觉得 你是我这辈子很重要的人 你对我的好我完全看在眼里 而我也是尽我所能在我有能力的时候把好的给你 希望你开心 因为我喜欢看到你的笑容 看到你开心 我也会很开心",
+    "如果你问我友谊的定义是什么\n我的答案就是 张乙薰",
+    "我的高中生活 有你 我真的很开心 我们一起经历过风风雨雨 我们一起哭一起闹 一起喝酒到 我把最真实的我 哭给你看 那一刻我发现 你对我来说已经不是普通的存在 因为我把所有我的内心告诉你",
+    "这次想到你要去KL了 我其实真的千万种不舍 我知道你很坚强 很聪明 但我也知道你内心很敏感 也是个泪失禁 我很怕你受欺负 很怕你一个人人生地不熟 怕你孤单 怕你压力 所以我想到的时候真的会很难过",
+    "我想告诉你 如果你需要我了 你一定要跟我说 无论如何 无论你在天涯海角 我也一直都在 像我说的 你不需要我的时候 只要我有时间 我也会去找你 我真的会一直都在",
+    "你让我学会了如何真心对一个人\n你让我知道我也值得被真心对待\n你让我知道这个世界破破烂烂 而你一直缝缝补补",
+    "在认识你之前 我很强势 我认为所有东西都需要跟着规则走 就像我是pengawas exco的时候 我被大家排挤 说我冷血 不会睁一眼闭一眼 你的出现 让我知道什么叫偏心 偏爱 偏袒 好多事情别人做我都无法接受 但你做 我只觉得你开心是最最最重要的 甚至想陪你闹",
+    "还没认识你之前我真的很讨厌中学生涯 我根本不理解他们的不舍 所以我真的很谢谢你 让我黯淡无光的日子 画上很多道光 很多道彩虹",
+    "毕业的时候 我感受到了不舍 这个不舍是因为不舍我们在中学的回忆止步于此 所以我们毕业后能走到今天 我真的真的很开心你知道吗 我希望我们可以一辈子 老了一起去环游世界 继续一起聊八卦 一起吵 一起闹",
+    "在KL一定要好好保护自己 好好爱自己知道吗\n压力了就给自己一些时间 休息休息\n如果有人欺负你 我就飞过去帮你讨回公道\n一定要定时吃饭 不要再不吃了！\n去那边你会认识更多的人 但是不要被骗\n人有好有坏 你要好好看\n遇到什么事情都一定要跟我说",
+    "就算你遇到很好的朋友 我也会替你开心 也会一直在你背后做你的后盾 我会一直在",
+    "所以所有的所有 我真的很感谢你\n大话我不敢说\n但我敢说 在你生命中 我是最爱你的朋友\n当你遇到困难 只要我能做到 我都一定会帮你\n只要你需要我 我一定都会在\n因为你是张乙薰\n也谢谢你是张乙薰"
+  ];
+
+  function showLetter() {
+    var box = document.getElementById("letter-container");
+    box.innerHTML = "";
+    for (var i = 0; i < LETTER.length; i++) {
+      var p = document.createElement("div");
+      p.className = "letter-p";
+      p.style.transitionDelay = (0.15 * i) + "s";
+      p.innerHTML = LETTER[i].replace(/\n/g, "<br>");
+      box.appendChild(p);
+    }
+    // Trigger fade-in after a short delay
+    setTimeout(function() {
+      var ps = box.querySelectorAll(".letter-p");
+      // Use IntersectionObserver if available, otherwise just reveal all
+      if (window.IntersectionObserver) {
+        var obs = new IntersectionObserver(function(entries) {
+          for (var j = 0; j < entries.length; j++) {
+            if (entries[j].isIntersecting) {
+              entries[j].target.classList.add("visible");
+              obs.unobserve(entries[j].target);
+            }
+          }
+        }, { root: document.getElementById("final-scroll"), threshold: 0.1 });
+        for (var k = 0; k < ps.length; k++) {
+          obs.observe(ps[k]);
+        }
+        // Also observe the ending text
+        var endEl = document.querySelector(".letter-end");
+        if (endEl) obs.observe(endEl);
+      } else {
+        for (var m = 0; m < ps.length; m++) ps[m].classList.add("visible");
+        var endEl2 = document.querySelector(".letter-end");
+        if (endEl2) endEl2.classList.add("visible");
+      }
+      // Reveal first few immediately
+      for (var n = 0; n < Math.min(3, ps.length); n++) {
+        ps[n].classList.add("visible");
+      }
+    }, 600);
+  }
+  var wrongCounts = { q1: 0, q2: 0, q3: 0 };
+  var hintMsgs = {
+    q1: ["\u518d\u60f3\u60f3\u561b\uff5e \ud83e\udd14", "\u63d0\u793a\uff1a\u6211\u600e\u9ebc\u53ef\u80fd\u77e5\u9053\u5462 \ud83d\ude36", "\u770b\u770b\u54ea\u500b\u8d8a\u4f86\u8d8a\u5927..."],
+    q2: ["\u4f60\u78ba\u5b9a\u55ce\uff1f \ud83d\ude0f", "\u518d\u731c\u731c\uff5e \u4f60\u5f88\u91cd\u8981\u7684 \ud83d\udc9b", "\u7b54\u6848\u8d8a\u4f86\u8d8a\u660e\u986f\u4e86\u5427\uff01"],
+    q3: ["\u7b54\u6848\u5f88\u660e\u986f\u5427\uff5e \ud83d\ude24", "\u600e\u9ebc\u53ef\u80fd\u4e0d\u662f\u6211\uff01\ud83d\ude44", "\u770b\uff01\u770b\u90a3\u500b\u5927\u5927\u7684\u6309\u9215\uff01"]
+  };
+
+  function goTo(id) {
+    var all = document.querySelectorAll(".screen");
+    for (var i = 0; i < all.length; i++) all[i].classList.remove("active");
+    setTimeout(function() {
+      document.getElementById(id).classList.add("active");
+      if (id === "final") { confetti(); hearts(); showLetter(); }
+    }, 300);
+  }
+
+  function onOption(e) {
+    var btn = e.currentTarget;
+    var ok = btn.getAttribute("data-a") === "correct";
+    var qId = btn.getAttribute("data-q");
+    var nxt = btn.getAttribute("data-n");
+    var wrap = document.getElementById(qId + "-options");
+    var btns = wrap.querySelectorAll(".option-btn");
+    var hint = document.getElementById(qId + "-hint");
+
+    if (ok) {
+      btn.style.cssText = "background:#BF7E46;color:#fff;border-color:#BF7E46;transform:scale(1.1);pointer-events:none;";
+      for (var i = 0; i < btns.length; i++) btns[i].style.pointerEvents = "none";
+      sparkle(btn);
+      hearts();
+      setTimeout(function() { goTo(nxt); }, 900);
+    } else {
+      wrongCounts[qId]++;
+      var c = wrongCounts[qId];
+      btn.style.animation = "none";
+      void btn.offsetHeight;
+      btn.style.animation = "shake 0.4s ease";
+      for (var j = 0; j < btns.length; j++) {
+        var b = btns[j];
+        if (b.getAttribute("data-a") === "wrong") {
+          b.style.transform = "scale(" + Math.max(0.5, 1 - c * 0.12) + ")";
+          b.style.opacity = "" + Math.max(0.35, 1 - c * 0.15);
+        } else {
+          b.style.transform = "scale(" + (1 + c * 0.12) + ")";
+          b.style.boxShadow = "0 0 " + (c * 8) + "px rgba(191,126,70,0.3)";
+        }
+      }
+      hint.classList.add("show");
+      var arr = hintMsgs[qId];
+      hint.textContent = arr[Math.min(c - 1, arr.length - 1)];
+    }
+  }
+
+  function sparkle(btn) {
+    var r = btn.getBoundingClientRect();
+    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var d = document.createElement("div");
+    d.style.cssText = "position:fixed;pointer-events:none;z-index:100;";
+    document.body.appendChild(d);
+    var cols = ["#BF7E46","#97C6E0","#FBEDD6","#f0c674","#e8a87c"];
+    for (var i = 0; i < 12; i++) {
+      var s = document.createElement("div");
+      s.style.cssText = "position:absolute;width:6px;height:6px;border-radius:50%;left:" + cx + "px;top:" + cy + "px;background:" + cols[i%5] + ";";
+      var a = (i/12)*Math.PI*2, dist = 40+Math.random()*30;
+      var tx = Math.cos(a)*dist, ty = Math.sin(a)*dist;
+      if (s.animate) {
+        s.animate([
+          {transform:"translate(0,0) scale(1)",opacity:1},
+          {transform:"translate("+tx+"px,"+ty+"px) scale(0)",opacity:0}
+        ],{duration:600,easing:"ease-out",fill:"forwards"});
+      }
+      d.appendChild(s);
+    }
+    setTimeout(function(){d.parentNode.removeChild(d);},700);
+  }
+
+  function hearts() {
+    var box = document.getElementById("hearts");
+    var em = ["\ud83d\udc9b","\ud83e\udde1","\ud83e\udd0e","\ud83d\udcab","\u2728"];
+    for (var i = 0; i < 6; i++) {
+      var h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = em[Math.floor(Math.random()*em.length)];
+      h.style.left = (15+Math.random()*70)+"%";
+      h.style.bottom = "10%";
+      h.style.animationDelay = (i*0.2)+"s";
+      box.appendChild(h);
+      (function(el){setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},3500);})(h);
+    }
+  }
+
+  function confetti() {
+    var box = document.getElementById("confetti");
+    var cols = ["#BF7E46","#FBEDD6","#97C6E0","#f0c674","#e8a87c","#b8d8e8"];
+    for (var i = 0; i < 50; i++) {
+      var p = document.createElement("div");
+      p.className = "confetti-piece";
+      p.style.left = Math.random()*100+"%";
+      p.style.background = cols[Math.floor(Math.random()*cols.length)];
+      p.style.borderRadius = Math.random()>0.5?"50%":"2px";
+      p.style.width = (6+Math.random()*8)+"px";
+      p.style.height = (6+Math.random()*8)+"px";
+      p.style.animationDuration = (2+Math.random()*3)+"s";
+      p.style.animationDelay = (Math.random()*1.5)+"s";
+      box.appendChild(p);
+    }
+    setTimeout(function(){box.innerHTML="";},5000);
+  }
+
+  // === BINDALL ===
+  document.getElementById("js-start").addEventListener("click", function(){ goTo("q1"); });
+
+  var opts = document.querySelectorAll(".option-btn");
+  for (var k = 0; k < opts.length; k++) {
+    opts[k].addEventListener("click", onOption);
+  }
+
+  // Debug: confirm script loaded
+  console.log("QA script loaded, found " + opts.length + " option buttons");
+
+});
+</script>
+</body>
+</html>
